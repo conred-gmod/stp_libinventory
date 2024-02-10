@@ -1,0 +1,64 @@
+namespace stp.inv;
+
+-- Габариты предмета
+struct .ItemInvSize {
+    .Height: nonzero_uint
+    .Width: nonzero_uint
+}
+
+const .MAX_INV_SIZE: uint
+const .INV_SIZE_BITS: uint
+
+enum .ITEM_DIR {
+    .RIGHT = 0, -- "right" is a default direction
+    .DOWN = 1,
+    .LEFT = 2,
+    .UP = 3
+}
+
+struct .ItemInvPos {
+    .X: uint,
+    .Y: uint,
+    
+    .Dir: .ITEM_DIR
+}
+
+trait .Item {
+    require stp.net.EasyComposite
+
+    abstract fn :GetName() -> string
+    abstract fn :GetDesc() -> string
+    abstract fn :GetSize() -> .ItemInvSize
+
+    fn :GetWorldEntity() -> Entity | nil
+
+    -- Предмет может быть или не быть в инвентаре.
+    -- TODO: Добавить поддержку нахождения в нескольких инвентарях сразу (двуручное оружие, каждая рука - отдельный инвентарь)
+    fn :GetInventory() -> .Inventory | nil
+    fn :GetInventoryPos() -> .ItemInvPos | nil    
+
+    SV fn :TryMoveToWorld(pos: Vector, ang: Angle) -> error: nil|string
+    SV fn :TryMoveToInventory(inv: .Inventory, pos: .ItemInvPos) -> error: nil|string
+    -- Если в pos_hint предмет не влезет (или он не указан), попытается сдвинуть или повернуть предмет так, чтобы влезло
+    SV fn :TryMoveToInventory_Fit(inv: .Inventory, pos_hint: .ItemInvPos|nil) -> error: nil|string
+}
+
+struct .Inventory {
+    require stp.net.EasyComposite
+
+    -- Inventory size (in slots)
+    ctorparam .Height: nonzero_uint
+    fn :GetHeight() -> nonzero_uint
+    SV fn :SetHeight(h: nonzero_uint)
+
+    ctorparam .Width: nonzero_uint
+    fn :GetWidth() -> nonzero_uint
+    SV fn :SetWidth(w: nonzero_uint)
+
+    -- Multi-item inventories can hold multiple items (e.g. containers)
+    -- Single-item can only hold one item (e.g. hands or outfit slots)
+    ctorparam .IsMultiItem: bool
+    fn :IsMultiItem() -> bool
+
+    fn :GetItems() -> array(.Item)
+}
