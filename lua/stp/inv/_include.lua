@@ -1,5 +1,5 @@
-local inv = stp.inv or RecursiveRemoveFalseValues({
-
+local inv = stp.inv or stp.RecursiveRemoveFalseValues({
+    schema = {}
 })
 stp.inv = inv
 

@@ -23,6 +23,15 @@ struct .ItemInvPos {
     .Dir: .ITEM_DIR
 }
 
+const .DEFAULT_INV_POS: .ItemInvPos = { .X = 0, .Y = 0, .Dir: .ITEM_DIR.RIGHT }
+
+namespace schema {
+    ItemInvSize = stp.obj.net.schema.Schema({TData = stp.inv.ItemInvSize})
+
+    ItemInvPos = stp.obj.net.schema.Schema({TData = stp.inv.ItemInvPos})
+}
+
+
 trait .Item {
     require stp.net.EasyComposite
 
@@ -35,30 +44,49 @@ trait .Item {
     -- Предмет может быть или не быть в инвентаре.
     -- TODO: Добавить поддержку нахождения в нескольких инвентарях сразу (двуручное оружие, каждая рука - отдельный инвентарь)
     fn :GetInventory() -> .Inventory | nil
-    fn :GetInventoryPos() -> .ItemInvPos | nil    
+    fn :GetInventoryPos() -> .ItemInvPos | nil -- Do NOT modify returned table by-reference    
 
-    SV fn :TryMoveToWorld(pos: Vector, ang: Angle) -> error: nil|string
+    SV fn :TryMoveToWorld(pos: Vector, ang: Angle|nil) -> entity: Entity|nil, error: nil|string
     SV fn :TryMoveToInventory(inv: .Inventory, pos: .ItemInvPos) -> error: nil|string
     -- Если в pos_hint предмет не влезет (или он не указан), попытается сдвинуть или повернуть предмет так, чтобы влезло
     SV fn :TryMoveToInventory_Fit(inv: .Inventory, pos_hint: .ItemInvPos|nil) -> error: nil|string
 }
 
-struct .Inventory {
+trait .Inventory {
     require stp.net.EasyComposite
 
     -- Inventory size (in slots)
-    ctorparam .Height: nonzero_uint
-    fn :GetHeight() -> nonzero_uint
-    SV fn :SetHeight(h: nonzero_uint)
-
+    ctorparam .Height: nonzero_uint -- Inventory size is a constant
     ctorparam .Width: nonzero_uint
+    fn :GetHeight() -> nonzero_uint
     fn :GetWidth() -> nonzero_uint
-    SV fn :SetWidth(w: nonzero_uint)
 
-    -- Multi-item inventories can hold multiple items (e.g. containers)
-    -- Single-item can only hold one item (e.g. hands or outfit slots)
-    ctorparam .IsMultiItem: bool
-    fn :IsMultiItem() -> bool
 
-    fn :GetItems() -> array(.Item)
+    abstract fn :GetItems() -> array(.Item)
+
+    abstract fn :CanPut(pos: .ItemInvPos, size: .ItemInvSize) -> bool
+    abstract fn :CanPutIfMovedFrom(new_pos: .ItemInvPos, size: .ItemInvSize, old_pos: .ItemInvPos) -> bool
+
+    abstract fn :FitPosition(pos_hint: .ItemInvPos|nil, size: .ItemInvSize) -> .ItemInvPos|nil
+    abstract fn :FitPositionIfMovedFrom(new_pos_hint: .ItemInvPos|nil, size: .ItemInvSize, old_pos: .ItemInvPos) -> .ItemInvPos|nil
+
+    -- pos is validated by CanPut/FitPosition or variations.
+    -- Following functions are not supposed to be called by user code.
+    abstract fn :PutItem(item: .Item, pos: .ItemInvPos)
+    abstract fn :TakeItem(item: .Item)
+}
+
+-- Инвентарь, который может содержать несколько предметов
+struct .MultiItemInv {
+    require .Inventory
+
+    impl fn :GetItems() -> array(.Item)
+}
+
+-- Инвентарь, который может содержать только один предмет
+struct .SingleItemInv {
+    require .Inventory
+
+    impl fn :GetItems() -> array(.Item)
+    impl fn :GetItem() -> .Item | nil
 }
