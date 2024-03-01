@@ -72,8 +72,8 @@ trait .Inventory {
 
     -- pos is validated by CanPut/FitPosition or variations.
     -- Following functions are not supposed to be called by user code.
-    abstract fn :PutItem(item: .Item, pos: .ItemInvPos)
-    abstract fn :TakeItem(item: .Item)
+    SV abstract fn :PutItem(item: .Item, pos: .ItemInvPos)
+    SV abstract fn :TakeItem(item: .Item)
 }
 
 -- Инвентарь, который может содержать несколько предметов

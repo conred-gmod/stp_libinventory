@@ -202,6 +202,34 @@ if SERVER then
     end
 end
 
-
 libo.Register(ITEM)
 libinv.Item = ITEM
+
+
+local INVS = libo.BeginObject("stp.inv.SingleItemInv")
+INV(INVS)
+
+function INVS:GetItem()
+    return self._item
+end
+
+function INVS:GetItems()
+    return {self._item}
+end
+
+if SERVER then
+    function INVS:PutItem(item, pos)
+        self._item = item
+    end
+
+    function INVS:TakeItem(item)
+        assert(self._item == item)
+
+        self._item = nil
+    end
+end
+
+
+
+libo.Register(INVS)
+libinv.SingleItemInv = INVS
