@@ -46,6 +46,14 @@ libinvsch.ItemInvPos = {
     end
 }
 
+-- -> height: uint, width: uint
+local function GetItemExtents(size, dir)
+    if dir == libinv.ITEM_DIR.RIGHT or dir == libinv.ITEM_DIR.LEFT then
+        return size.Height, size.Width
+    else
+        return size.Width, size.Height
+    end
+end
 
 -- Inventory metatable
 local INV = libo.BeginTrait("stp.inv.Inventory")
@@ -62,6 +70,9 @@ libo.MarkAbstract(INV, "FitPositionIfMovedFrom", "function")
 
 libo.MarkAbstract(INV, "TakeItem", "function")
 libo.MarkAbstract(INV, "PutItem", "function")
+
+-- TODO: Height/GetHeight
+-- TODO: Width/GetWidth
 
 libo.Register(INV)
 libinv.Inventory = INV
@@ -229,7 +240,90 @@ if SERVER then
     end
 end
 
+function INVS:CanPut(pos, size)
+
+end
+
+function INVS:CanPutIfMovedFrom(new_pos, size, old_pos)
+
+end
+
+function INVS:FitPosition(pos_hint, size)
+
+end
+
+function INVS:FitPositionIfMovedFrom(new_pos_hint, size, old_pos)
+
+end
+
 
 
 libo.Register(INVS)
 libinv.SingleItemInv = INVS
+
+
+
+local INVM = libo.BeginObject("stp.inv.MultiItemInv")
+INV(INVM)
+
+libo.HookAdd(INVM, "Init", INVM.TypeName, function(self, args)
+    self._items = {}
+    
+    self._itemGrid = {}
+    for y = 1, self:GetHeight() do
+        self._itemGrid[y] = {}
+    end
+end)
+
+function INVM:GetItems()
+    return self._items
+end
+
+if SERVER then
+    function INVM:PutItem(item, pos)
+        table.insert(self._items, item)
+
+        local h, w = GetItemExtents(item:GetSize(), pos.Dir)
+
+        for y = pos.Y, pos.Y + h - 1 do
+            for x = pos.X, pos.X + w - 1 do
+                self._items[y][x] = item
+            end
+        end
+    end
+
+    function INVM:TakeItem(item)
+        table.RemoveFastByValue(self._items, item)
+
+        local pos = item:GetInventoryPos()
+        local h, w = GetItemExtents(item:GetSize(), pos.Dir)
+
+        for y = pos.Y, pos.Y + h - 1 do
+            for x = pos.X, pos.X + w - 1 do
+                self._items[y][x] = nil
+            end
+        end
+    end
+end
+
+function INVM:CanPut(pos, size)
+    local h, w = GetItemExtents(size, pos.Dir)
+    return pos.X < w and pos.Y < h
+end
+
+function INVM:CanPutIfMovedFrom(new_pos, size, old_pos)
+    local h, w = GetItemExtents(size, pos.Dir)
+    return pos.X + w - 1 < self:GetWidth() and pos.Y + h - 1 < self:GetHeight()
+end
+
+function INVM:FitPosition(pos_hint, size)
+    --if 
+end
+
+function INVM:FitPositionIfMovedFrom(new_pos_hint, size, old_pos)
+
+end
+
+
+libo.Register(INVM)
+libinv.MultiItemInv = INVM
