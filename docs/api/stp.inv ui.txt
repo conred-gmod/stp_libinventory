@@ -1,0 +1,8 @@
+namespace stp.inv;
+
+CL class .UiItem { -- Derma control
+    base DButton;
+
+    fn :SetItem(item: .Item)
+    fn :SetGridScale(scale: number)
+}

@@ -37,6 +37,7 @@ trait .Item {
 
     abstract fn :GetName() -> string
     abstract fn :GetDesc() -> string
+    -- Should be constant.
     abstract fn :GetSize() -> .ItemInvSize
 
     fn :GetWorldEntity() -> Entity | nil

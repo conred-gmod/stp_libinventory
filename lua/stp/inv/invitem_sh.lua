@@ -47,7 +47,7 @@ libinvsch.ItemInvPos = {
 }
 
 -- -> height: uint, width: uint
-local function GetItemExtents(size, dir)
+function libinv.GetItemExtents(size, dir)
     if dir == libinv.ITEM_DIR.RIGHT or dir == libinv.ITEM_DIR.LEFT then
         return size.Height, size.Width
     else
