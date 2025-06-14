@@ -22,7 +22,11 @@ trait .Item {
     SV fn :TryMoveToInventory(inv: .Inventory, pos: .ItemInvPos) -> error: nil|string
     -- Если в pos_hint предмет не влезет (или он не указан), попытается сдвинуть или повернуть предмет так, чтобы влезло
     SV fn :TryMoveToInventory_Fit(inv: .Inventory, pos_hint: .ItemInvPos|nil) -> error: nil|string
+
+    SV impl fn :NetGetRecipients(recip: CRecipientList)
 }
+
+hook .Item.GetCustomRecipients(recip: CRecipientList, item: .Item)
 
 -- "Просто предмет" в мире. Так же - базовый класс для всяких нетривиальных штук. 
 entity stp_item {

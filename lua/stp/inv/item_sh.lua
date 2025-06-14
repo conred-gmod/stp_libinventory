@@ -161,6 +161,22 @@ local ITEM = sobj.BeginTrait("stp.inv.Item")
 
             self:_TryMoveToInventory_Generic(inv, pos, oldinv)
         end
+
+
+        function ITEM:NetGetRecipients(recip)
+            local ent = self._worldEntity
+            if IsValid(ent) then
+                recip:AddPVS(ent:GetPos())
+            end
+
+            local inv = self:GetInventory()
+            if inv ~= nil then
+                inv:NetGetRecipients(recip)
+            end
+
+            hook.Run("stp.inv.Item.GetCustomRecipients", self, recip)
+        end
+
     end
 
 sinv.Item = sobj.Register(ITEM)
