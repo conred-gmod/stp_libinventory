@@ -23,6 +23,8 @@ struct .ItemInvPos {
     .Dir: .ITEM_DIR
 }
 
+fn .GetItemExtents(size: .ItemInvSize, dir: .ITEM_DIR) -> height: uint, width: uint
+
 const .DEFAULT_INV_POS: .ItemInvPos = { .X = 0, .Y = 0, .Dir: .ITEM_DIR.RIGHT }
 
 namespace schema {
