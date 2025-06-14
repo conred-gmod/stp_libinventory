@@ -1,0 +1,22 @@
+namespace stp.inv;
+
+trait .Item {
+    require stp.net.EasyComposite
+
+    abstract fn :GetName() -> string
+    abstract fn :GetDesc() -> string
+    -- Should be constant.
+    abstract fn :GetSize() -> .ItemInvSize
+
+    fn :GetWorldEntity() -> Entity | nil
+
+    -- Предмет может быть или не быть в инвентаре.
+    -- TODO: Добавить поддержку нахождения в нескольких инвентарях сразу (двуручное оружие, каждая рука - отдельный инвентарь)
+    fn :GetInventory() -> .Inventory | nil
+    fn :GetInventoryPos() -> .ItemInvPos | nil -- Do NOT modify returned table by-reference    
+
+    SV fn :TryMoveToWorld(pos: Vector, ang: Angle|nil) -> entity: Entity|nil, error: nil|string
+    SV fn :TryMoveToInventory(inv: .Inventory, pos: .ItemInvPos) -> error: nil|string
+    -- Если в pos_hint предмет не влезет (или он не указан), попытается сдвинуть или повернуть предмет так, чтобы влезло
+    SV fn :TryMoveToInventory_Fit(inv: .Inventory, pos_hint: .ItemInvPos|nil) -> error: nil|string
+}

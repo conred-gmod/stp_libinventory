@@ -1,0 +1,40 @@
+namespace stp.inv;
+
+trait .Inventory {
+    require stp.net.EasyComposite
+
+    -- Inventory size (in slots)
+    ctorparam .Height: nonzero_uint -- Inventory size is a constant
+    ctorparam .Width: nonzero_uint
+    fn :GetHeight() -> nonzero_uint
+    fn :GetWidth() -> nonzero_uint
+
+
+    abstract fn :GetItems() -> array(.Item)
+
+    abstract fn :CanPut(pos: .ItemInvPos, size: .ItemInvSize) -> bool
+    abstract fn :CanPutIfMovedFrom(new_pos: .ItemInvPos, size: .ItemInvSize, old_pos: .ItemInvPos) -> bool
+
+    abstract fn :FitPosition(pos_hint: .ItemInvPos|nil, size: .ItemInvSize) -> .ItemInvPos|nil
+    abstract fn :FitPositionIfMovedFrom(new_pos_hint: .ItemInvPos|nil, size: .ItemInvSize, old_pos: .ItemInvPos) -> .ItemInvPos|nil
+
+    -- pos is validated by CanPut/FitPosition or variations.
+    -- Following functions are not supposed to be called by user code.
+    SV abstract fn :PutItem(item: .Item, pos: .ItemInvPos)
+    SV abstract fn :TakeItem(item: .Item)
+}
+
+-- Инвентарь, который может содержать несколько предметов
+struct .MultiItemInv {
+    require .Inventory
+
+    impl fn :GetItems() -> array(.Item)
+}
+
+-- Инвентарь, который может содержать только один предмет
+struct .SingleItemInv {
+    require .Inventory
+
+    impl fn :GetItems() -> array(.Item)
+    impl fn :GetItem() -> .Item | nil
+}

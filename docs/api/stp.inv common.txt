@@ -1,0 +1,32 @@
+namespace stp.inv;
+
+-- Габариты предмета
+struct .ItemInvSize {
+    .Height: nonzero_uint
+    .Width: nonzero_uint
+}
+
+const .MAX_INV_SIZE: uint
+const .INV_SIZE_BITS: uint
+
+enum .ITEM_DIR {
+    .RIGHT = 0, -- "right" is a default direction
+    .DOWN = 1,
+    .LEFT = 2,
+    .UP = 3
+}
+
+struct .ItemInvPos {
+    .X: uint,
+    .Y: uint,
+    
+    .Dir: .ITEM_DIR
+}
+
+const .DEFAULT_INV_POS: .ItemInvPos = { .X = 0, .Y = 0, .Dir: .ITEM_DIR.RIGHT }
+
+namespace schema {
+    ItemInvSize = stp.obj.net.schema.Schema({TData = stp.inv.ItemInvSize})
+
+    ItemInvPos = stp.obj.net.schema.Schema({TData = stp.inv.ItemInvPos})
+}
