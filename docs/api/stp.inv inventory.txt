@@ -12,16 +12,15 @@ trait .InventoryBase {
 
     abstract fn :GetItems() -> array(.Item)
 
-    abstract fn :CanPut(pos: .ItemInvPos, size: .ItemInvSize) -> bool
-    abstract fn :CanPutIfMoved(pos: .ItemInvPos, size: .ItemInvSize, item: .Item) -> bool
+    abstract fn :CanPut(pos: .ItemInvPos, size: .ItemInvSize, skip_item: .Item|nil) -> bool
+    
+    abstract fn :FitPosition(pos_hint: .ItemInvPos|nil, size: .ItemInvSize, skip_item: .Item|nil) -> .ItemInvPos|nil
 
-    abstract fn :FitPosition(pos_hint: .ItemInvPos|nil, size: .ItemInvSize) -> .ItemInvPos|nil
-    abstract fn :FitPositionIfMoved(pos_hint: .ItemInvPos|nil, size: .ItemInvSize, item: .Item) -> .ItemInvPos|nil
-
-    -- pos is validated by CanPut/FitPosition or variations.
+    -- pos is assumed to be correct.
     -- Following functions are not supposed to be called by user code.
-    SV abstract fn :PutItem(item: .Item, pos: .ItemInvPos)
-    SV abstract fn :TakeItem(item: .Item)
+    abstract fn :PutItem(item: .Item, pos: .ItemInvPos)
+    abstract fn :TakeItem(item: .Item)
+    abstract fn :MoveItem(item: .Item, pos: .ItemInvPos)
 }
 
 -- Инвентарь, который может содержать несколько предметов

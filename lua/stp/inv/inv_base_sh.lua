@@ -20,9 +20,12 @@ local INV = sobj.BeginTrait("stp.inv.InventoryBase")
 
     sobj.MarkAbstract(INV, "TakeItem", "function")
     sobj.MarkAbstract(INV, "PutItem", "function")
+    sobj.MarkAbstract(INV, "MoveItem", "function")
 
     -- TODO: Height/GetHeight
     -- TODO: Width/GetWidth
+    
+
 
 
 sinv.InventoryBase = sobj.Register(INV)

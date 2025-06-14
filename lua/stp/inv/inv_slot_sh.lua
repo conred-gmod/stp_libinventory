@@ -16,17 +16,21 @@ local SLOT = sobj.BeginObject("stp.inv.Slot")
         return {self._item}
     end
 
-    if SERVER then
-        function SLOT:PutItem(item, pos)
-            self._item = item
-        end
-
-        function SLOT:TakeItem(item)
-            assert(self._item == item)
-
-            self._item = nil
-        end
+    function SLOT:PutItem(item, pos)
+        self._item = item
     end
+
+    function SLOT:TakeItem(item)
+        assert(self._item == item)
+
+        self._item = nil
+    end
+
+    function SLOT:MoveItem(item, new_pos)
+        assert(self._item == item)
+        -- Do nothing.
+    end
+
 
     function SLOT:_CanFit(dir, item_size)
         local h, w = sinv.GetItemExtents(dir, item_size)
@@ -34,18 +38,17 @@ local SLOT = sobj.BeginObject("stp.inv.Slot")
         return h <= self:GetHeight() and w <= self:GetWidth()
     end
 
-    function SLOT:CanPut(pos, item_size)
-        return self:_CanFit(pos.Dir, item_size)
-    end
+    function SLOT:CanPut(pos, item_size, item)
+        -- If item was already placed into the slot, it definetely fits
+        if item == self._item then return true end
 
-    function SLOT:CanPutIfMoved(pos, size, item)
-        return true -- If item was already placed into the slot, it definetely fits
+        return self:_CanFit(pos.Dir, item_size)
     end
 
     local POS_RIGHT = { X = 0, Y = 0, Dir = sinv.ITEM_DIR.RIGHT}
     local POS_DOWN = { X = 0, Y = 0, Dir = sinv.ITEM_DIR.DOWN}
 
-    function SLOT:FitPosition(pos_hint, item_size)
+    function SLOT:FitPosition(pos_hint, item_size, _)
         if pos_hint and self:_CanFit(pos_hint.Dir, item_size)
             return { X = 0, Y = 0, Dir = pos_hint.Dir}
         end
@@ -59,8 +62,5 @@ local SLOT = sobj.BeginObject("stp.inv.Slot")
         end
     end
 
-    function SLOT:FitPositionIfMoved(pos_hint, item_size, item)
-        return SLOT:FitPosition(pos_hint, item_size)
-    end
 
 sinv.Slot = sobj.Register(SLOT)

@@ -16,11 +16,16 @@ local ITEM = sobj.BeginTrait("stp.inv.Item")
     sobj.MarkAbstract(ITEM, "GetSize", "function")
 
     sobj.ConstructNestedType(ITEM, "Inventory", snet.MakeEasyVar(snet.schema.StpNetworkable, 
-        "GetInventory", SERVER and "_SetInventory", nil, { DefaultIsNil = true }
+        "GetInventory", SERVER and "_SetInventory", nil, { 
+            DefaultIsNil = true,
+            Callback = CLIENT and "_OnInventoryChanged"
+        }
     ))
 
     sobj.ConstructNestedType(ITEM, "InvPos", snet.MakeEasyVar(sinvsch.ItemInvPos, 
-        "_GetInvPos", SERVER and "_SetInvPos", sinv.DEFAULT_INV_POS
+        "_GetInvPos", SERVER and "_SetInvPos", sinv.DEFAULT_INV_POS, { 
+            Callback = CLIENT and "_OnItemPosChanged"
+        }
     ))
 
     function ITEM:GetInvPos()
@@ -129,7 +134,7 @@ local ITEM = sobj.BeginTrait("stp.inv.Item")
 
             local oldinv = self:GetInventory()
             if oldinv == inv then
-                if not inv:CanPutIfMoved(pos, self:GetSize(), self) then
+                if not inv:CanPut(pos, self:GetSize(), self) then
                     return "stp.inv.error.no_place"
                 end
             else
@@ -150,7 +155,7 @@ local ITEM = sobj.BeginTrait("stp.inv.Item")
 
             local pos
             if oldinv == inv then
-                pos = inv:FitPositionIfMoved(pos_hint, self:GetSize(), self)
+                pos = inv:FitPosition(pos_hint, self:GetSize(), self)
             else
                 pos = inv:FitPosition(pos_hint, self:GetSize())
             end
@@ -176,7 +181,24 @@ local ITEM = sobj.BeginTrait("stp.inv.Item")
 
             hook.Run("stp.inv.Item.GetCustomRecipients", self, recip)
         end
+    
+    else
+        function ITEM:_OnInventoryChanged(old_inv, new_inv)
+            if old_inv ~= nil then
+                old_inv:TakeItem(self)
+            end
 
+            if new_inv ~= nil then
+                new_inv:PutItem(self)
+            end
+        end
+
+        function ITEM:_OnItemPosChanged(old_pos, new_pos)
+            local inv = self:GetInventory()
+            if inv == nil then return end
+                
+            inv:MoveItem(self, new_pos)
+        end
     end
 
 sinv.Item = sobj.Register(ITEM)
