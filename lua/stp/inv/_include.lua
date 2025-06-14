@@ -4,7 +4,12 @@ local inv = stp.inv or stp.RecursiveRemoveFalseValues({
 stp.inv = inv
 
 stp.IncludeList("stp/inv/", {
-    "invitem_sh.lua",
+    "common_sh.lua",
+    "inv_base_sh.lua",
+    "item_sh.lua",
+    "inv_slot_sh.lua",
+    "inv_sh.lua",
+
     "ui_item_cl.lua",
     "ui_inv_cl.lua"
 })
