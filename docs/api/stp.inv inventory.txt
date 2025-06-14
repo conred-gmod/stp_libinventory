@@ -13,10 +13,10 @@ trait .InventoryBase {
     abstract fn :GetItems() -> array(.Item)
 
     abstract fn :CanPut(pos: .ItemInvPos, size: .ItemInvSize) -> bool
-    abstract fn :CanPutIfMovedFrom(new_pos: .ItemInvPos, size: .ItemInvSize, old_pos: .ItemInvPos) -> bool
+    abstract fn :CanPutIfMoved(pos: .ItemInvPos, size: .ItemInvSize, item: .Item) -> bool
 
     abstract fn :FitPosition(pos_hint: .ItemInvPos|nil, size: .ItemInvSize) -> .ItemInvPos|nil
-    abstract fn :FitPositionIfMovedFrom(new_pos_hint: .ItemInvPos|nil, size: .ItemInvSize, old_pos: .ItemInvPos) -> .ItemInvPos|nil
+    abstract fn :FitPositionIfMoved(pos_hint: .ItemInvPos|nil, size: .ItemInvSize, item: .Item) -> .ItemInvPos|nil
 
     -- pos is validated by CanPut/FitPosition or variations.
     -- Following functions are not supposed to be called by user code.

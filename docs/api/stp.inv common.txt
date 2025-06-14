@@ -1,5 +1,11 @@
 namespace stp.inv;
 
+-- Inventory grid coordinate system:
+-- x points to the right, starts from 0
+-- y points down, starts from 0
+
+
+
 -- Габариты предмета
 struct .ItemInvSize {
     .Height: nonzero_uint

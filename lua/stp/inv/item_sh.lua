@@ -129,7 +129,7 @@ local ITEM = sobj.BeginTrait("stp.inv.Item")
 
             local oldinv = self:GetInventory()
             if oldinv == inv then
-                if not inv:CanPutIfMovedFrom(pos, self:GetSize(), self:GetInvPos()) then
+                if not inv:CanPutIfMoved(pos, self:GetSize(), self) then
                     return "stp.inv.error.no_place"
                 end
             else
@@ -150,7 +150,7 @@ local ITEM = sobj.BeginTrait("stp.inv.Item")
 
             local pos
             if oldinv == inv then
-                pos = inv:FitPositionIfMovedFrom(pos_hint, self:GetSize(), self:GetInvPos())
+                pos = inv:FitPositionIfMoved(pos_hint, self:GetSize(), self)
             else
                 pos = inv:FitPosition(pos_hint, self:GetSize())
             end

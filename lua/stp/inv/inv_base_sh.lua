@@ -14,9 +14,9 @@ local INV = sobj.BeginTrait("stp.inv.InventoryBase")
     sobj.MarkAbstract(INV, "GetItems", "function")
 
     sobj.MarkAbstract(INV, "CanPut", "function")
-    sobj.MarkAbstract(INV, "CanPutIfMovedFrom", "function")
+    sobj.MarkAbstract(INV, "CanPutIfMoved", "function")
     sobj.MarkAbstract(INV, "FitPosition", "function")
-    sobj.MarkAbstract(INV, "FitPositionIfMovedFrom", "function")
+    sobj.MarkAbstract(INV, "FitPositionIfMoved", "function")
 
     sobj.MarkAbstract(INV, "TakeItem", "function")
     sobj.MarkAbstract(INV, "PutItem", "function")
