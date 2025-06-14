@@ -1,6 +1,6 @@
 namespace stp.inv;
 
-trait .Inventory {
+trait .InventoryBase {
     require stp.net.EasyComposite
 
     -- Inventory size (in slots)
@@ -25,15 +25,15 @@ trait .Inventory {
 }
 
 -- Инвентарь, который может содержать несколько предметов
-struct .MultiItemInv {
-    require .Inventory
+struct .Inventory {
+    require .InventoryBase
 
     impl fn :GetItems() -> array(.Item)
 }
 
 -- Инвентарь, который может содержать только один предмет
-struct .SingleItemInv {
-    require .Inventory
+struct .Slot {
+    require .InventoryBase
 
     impl fn :GetItems() -> array(.Item)
     impl fn :GetItem() -> .Item | nil

@@ -5,8 +5,8 @@ local snet = stp.obj.net
 
 local check_ty = stp.CheckType
 
--- Inventory metatable
-local INV = sobj.BeginTrait("stp.inv.Inventory")
+-- Base Inventory metatable
+local INV = sobj.BeginTrait("stp.inv.InventoryBase")
     sobj.ApplyMany(INV, 
         snet.EasyComposite
     )
@@ -25,4 +25,4 @@ local INV = sobj.BeginTrait("stp.inv.Inventory")
     -- TODO: Width/GetWidth
 
 
-sinv.Inventory = sobj.Register(INV)
+sinv.InventoryBase = sobj.Register(INV)

@@ -5,10 +5,10 @@ local snet = stp.obj.net
 
 local check_ty = stp.CheckType
 
-local INVM = sobj.BeginObject("stp.inv.MultiItemInv")
-    INV(INVM)
+local INV = sobj.BeginObject("stp.inv.Inventory")
+    sinv.InventoryBase(INV)
 
-    sobj.HookAdd(INVM, "Init", INVM.TypeName, function(self, args)
+    sobj.HookAdd(INV, "Init", INV.TypeName, function(self, args)
         self._items = {}
         
         self._itemGrid = {}
@@ -17,12 +17,12 @@ local INVM = sobj.BeginObject("stp.inv.MultiItemInv")
         end
     end)
 
-    function INVM:GetItems()
+    function INV:GetItems()
         return self._items
     end
 
     if SERVER then
-        function INVM:PutItem(item, pos)
+        function INV:PutItem(item, pos)
             table.insert(self._items, item)
 
             local h, w = GetItemExtents(item:GetSize(), pos.Dir)
@@ -34,7 +34,7 @@ local INVM = sobj.BeginObject("stp.inv.MultiItemInv")
             end
         end
 
-        function INVM:TakeItem(item)
+        function INV:TakeItem(item)
             table.RemoveFastByValue(self._items, item)
 
             local pos = item:GetInventoryPos()
@@ -48,22 +48,22 @@ local INVM = sobj.BeginObject("stp.inv.MultiItemInv")
         end
     end
 
-    function INVM:CanPut(pos, size)
+    function INV:CanPut(pos, size)
         local h, w = GetItemExtents(size, pos.Dir)
         return pos.X < w and pos.Y < h
     end
 
-    function INVM:CanPutIfMovedFrom(new_pos, size, old_pos)
+    function INV:CanPutIfMovedFrom(new_pos, size, old_pos)
         local h, w = GetItemExtents(size, pos.Dir)
         return pos.X + w - 1 < self:GetWidth() and pos.Y + h - 1 < self:GetHeight()
     end
 
-    function INVM:FitPosition(pos_hint, size)
+    function INV:FitPosition(pos_hint, size)
         --if 
     end
 
-    function INVM:FitPositionIfMovedFrom(new_pos_hint, size, old_pos)
+    function INV:FitPositionIfMovedFrom(new_pos_hint, size, old_pos)
 
     end
 
-sinv.MultiItemInv = sobj.Register(INVM)
+sinv.Inventory = sobj.Register(INV)

@@ -29,26 +29,59 @@ local ITEM = sobj.BeginTrait("stp.inv.Item")
         return self:_GetInvPos()
     end
 
-    function ITEM:GetWorldEntity()
+
+    ITEM.Entity_Class = "stp_item"
+
+    function ITEM:Entity_Get()
         return self._worldEntity
     end
 
-    function ITEM:_SetWorldEntity(ent)
-        self._worldEntity = ent
+    sobj.HookDefine(ITEM, "Entity_Init")
+
+    function ITEM:_Entity_Unlink(ent)
+        self._worldEntity = nil
+        ent:_SetItem(nil)
     end
 
+    function ITEM:_Entity_Link(ent)
+        if SERVER then ent:_SetItem(item) end
+        item._worldEntity = ent
+    end
 
     if SERVER then
+        -- Move or teleport the item entity
         local function World_Move(ent, pos, ang, item)
-
+            ent:SetPos(pos)
+            ent:SetAngles(ang)
         end
 
-        local function World_PreCreate(pos, ang, item)
+        -- Create the item entity
+        local function World_Create(pos, ang, item)
+            local class = item.WorldEntityClass
+
+            local ent = ents.Create(class)
+            if not IsValid(ent) then 
+                ErrorNoHaltWithStack("Can't create entity for item ",item,": failed creating entity '",class,"'")
+                return nil, "stp.inv.error.internal"
+            end
+
+            item:_Entity_Link(ent)
             
-        end
+            local err = World_Move(ent, pos, ang, item)
+            if err then 
+                ent:Remove()
+                return nil, err
+            end
 
-        local function World_Create(ent)
+            local oldinv = item:GetInventory()
+            if oldinv ~= nil then
+                oldinv:TakeItem(item)
+                item:_SetInventory(item)
+            end
 
+            ent:Spawn()
+
+            return ent, nil
         end
 
 
@@ -63,27 +96,16 @@ local ITEM = sobj.BeginTrait("stp.inv.Item")
                 return self._worldEntity, nil
             end
 
-            local ent, err = World_PreCreate(pos, ang, self)
-            if err then return nil, err end
+            return World_Create(pos, ang, self)
 
-            local oldinv = self:GetInventory()
-            if oldinv ~= nil then
-                oldinv:TakeItem(self)
-                self:_SetInventory(nil)
-            end
-
-            World_Create(ent)
-            self._worldEntity = ent
-
-            return ent, nil
         end
 
         function ITEM:_TryMoveFromWorld()
             local ent = self._worldEntity
             if not IsValid(ent) then return end
 
+            self:_Entity_Unlink(ent)
             ent:Remove()
-            self._worldEntity = nil
         end
 
         function ITEM:_TryMoveToInventory_Generic(inv, pos, oldinv)
