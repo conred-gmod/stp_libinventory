@@ -10,6 +10,6 @@ stp.IncludeList("stp/inv/", {
     "inv_slot_sh.lua",
     "inv_sh.lua",
 
-    "ui_item_cl.lua",
-    "ui_inv_cl.lua"
+    "ui/item_cl.lua",
+    "ui/inv_cl.lua"
 })
