@@ -2,7 +2,7 @@ AddCSLuaFile()
 
 ENT.Base = "base_entity"
 ENT.Type = "anim"
-EMT.PrintName = "Generic Item"
+ENT.PrintName = "Generic Item"
 ENT.Spawnable = false
 
 ENT.stpInv_IsItem = true

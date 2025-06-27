@@ -21,7 +21,11 @@ trait .InventoryBase {
     abstract fn :PutItem(item: .Item, pos: .ItemInvPos)
     abstract fn :TakeItem(item: .Item)
     abstract fn :MoveItem(item: .Item, pos: .ItemInvPos)
+
+    SV impl fn :NetGetRecipients(recip: CRecipientList)
 }
+
+hook .Inv.GetCustomRecipients(recip: CRecipientList, inv: .InventoryBase)
 
 -- Инвентарь, который может содержать несколько предметов
 struct .Inventory {

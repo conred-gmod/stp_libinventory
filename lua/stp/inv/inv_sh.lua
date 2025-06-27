@@ -120,8 +120,8 @@ local INV = sobj.BeginObject("stp.inv.Inventory")
                         return pos
                     end
 
-                    pos.Dir = sinv.ITEM_DIR.DOWN -- Try putting it vertically
-                    if self:CanPutIfMoved(pos, size, skip_item) then -- Try putting item horizontally
+                    pos.Dir = sinv.ITEM_DIR.DOWN
+                    if self:CanPutIfMoved(pos, size, skip_item) then -- Try putting it vertically
                         return pos
                     end
 
@@ -129,5 +129,13 @@ local INV = sobj.BeginObject("stp.inv.Inventory")
             end
         end
         -- else ??? end
+    end
+
+    if SERVER then
+        function INV:NetTransmitInit() 
+        end
+    else
+        function INV:NetReceiveInit()
+        end
     end
 sinv.Inventory = sobj.Register(INV)

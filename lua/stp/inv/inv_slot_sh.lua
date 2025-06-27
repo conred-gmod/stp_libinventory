@@ -49,7 +49,7 @@ local SLOT = sobj.BeginObject("stp.inv.Slot")
     local POS_DOWN = { X = 0, Y = 0, Dir = sinv.ITEM_DIR.DOWN}
 
     function SLOT:FitPosition(pos_hint, item_size, _)
-        if pos_hint and self:_CanFit(pos_hint.Dir, item_size)
+        if pos_hint and self:_CanFit(pos_hint.Dir, item_size) then
             return { X = 0, Y = 0, Dir = pos_hint.Dir}
         end
 
@@ -62,5 +62,11 @@ local SLOT = sobj.BeginObject("stp.inv.Slot")
         end
     end
 
-
+    if SERVER then
+        function SLOT:NetTransmitInit() 
+        end
+    else
+        function SLOT:NetReceiveInit()
+        end
+    end
 sinv.Slot = sobj.Register(SLOT)
