@@ -6,3 +6,7 @@ CL class .UiItem { -- Derma control
     fn :SetItem(item: .Item)
     fn :SetGridScale(scale: number)
 }
+
+CL class .UiInv { -- Derma control too
+    
+}
