@@ -3,6 +3,7 @@ local check_ty = stp.CheckType
 local PANEL = {}
 
 function PANEL:Init()
+    self:Droppable( "stp.inv" )
     self:SetDoubleClickingEnabled( false )
     self:SetText( "" )
 
@@ -10,6 +11,8 @@ function PANEL:Init()
     self._gridScale = 64
     self:_InvalidateSize()
 
+    local icon = self:Add("DPanel")
+    icon:SetMouseInputEnabled(false)
     self._icon = icon
 end
 
@@ -22,14 +25,18 @@ function PANEL:SetItem(item)
     self:_InvalidateModel()
 end
 
+function PANEL:GetItem()
+    return self._item
+end
+
 function PANEL:SetGridScale(scale)
     self._gridScale = scale
     self:_InvalidateSize()
 end
 
 function PANEL:_InvalidateSize()
-    local w = self._itemExtents.Width * self._gridSize
-    local h = self._itemExtents.Height * self._gridSize
+    local w = self._itemExtents.Width * self._gridScale
+    local h = self._itemExtents.Height * self._gridScale
 
     self:SetSize(w, h)
 end

@@ -4,9 +4,19 @@ CL class .UiItem { -- Derma control
     base DButton;
 
     fn :SetItem(item: .Item)
+    fn :GetItem() -> .Item
     fn :SetGridScale(scale: number)
 }
 
 CL class .UiInv { -- Derma control too
-    
+    base DFrame
+
+    fn :SetInventory(inv: .Inventory)
+}
+
+CL class .UiInvLayout {
+    base DDragBase
+
+    fn :SetInventory(inv: .Inventory)
+    fn :SetGridScale(scale: number)
 }

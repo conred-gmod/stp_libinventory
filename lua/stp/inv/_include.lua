@@ -11,5 +11,8 @@ stp.IncludeList("stp/inv/", {
     "inv_sh.lua",
 
     "ui/item_cl.lua",
-    "ui/inv_cl.lua"
+    "ui/inv_layout_cl.lua",
+    "ui/inv_cl.lua",
+
+    "__devtest.lua"
 })
